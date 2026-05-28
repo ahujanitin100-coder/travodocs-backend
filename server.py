@@ -607,8 +607,8 @@ app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r"https://.*\.lovable\.app|https://.*\.lovableproject\.com",
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
