@@ -607,7 +607,10 @@ app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.lovable\.app|https://.*\.lovableproject\.com",
+    allow_origins=[
+        "https://viz-twin-project.lovable.app",
+        "https://preview--viz-twin-project.lovable.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
