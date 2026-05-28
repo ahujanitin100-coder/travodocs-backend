@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>E-Ticket</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Liberation Serif', 'Georgia', serif; background: #fafaf7; padding: 40px; }
+        .ticket-container { background: white; border: 2px solid {{ brand.secondary_color }}; padding: 0; }
+        .header { padding: 32px 40px 24px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; }
+        .brand-block { display: flex; align-items: center; gap: 16px; }
+        .brand-logo { max-height: 64px; max-width: 160px; }
+        .brand-name { font-size: 22px; font-weight: 400; color: {{ brand.primary_color }}; letter-spacing: 2px; text-transform: uppercase; }
+        .doc-info { text-align: right; }
+        .doc-label { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+        .doc-pnr { font-size: 24px; color: {{ brand.primary_color }}; font-family: 'Courier New', monospace; letter-spacing: 2px; }
+        .luxury-divider { height: 1px; background: linear-gradient(90deg, transparent, {{ brand.secondary_color }}, transparent); margin: 0; }
+        .content { padding: 40px; }
+        .passenger-section { text-align: center; margin-bottom: 32px; }
+        .passenger-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+        .passenger-name { font-size: 28px; color: #1a1a1a; font-weight: 400; letter-spacing: 1px; }
+        .flight-info { display: flex; align-items: center; justify-content: space-between; padding: 32px 24px; background: #fafaf7; margin: 32px 0; border-top: 1px solid {{ brand.secondary_color }}; border-bottom: 1px solid {{ brand.secondary_color }}; }
+        .flight-detail { text-align: center; flex: 1; }
+        .flight-detail .city { font-size: 42px; color: {{ brand.primary_color }}; font-weight: 300; letter-spacing: 2px; }
+        .flight-detail .time { font-size: 13px; color: #666; margin-top: 8px; letter-spacing: 1px; }
+        .flight-arrow { font-size: 24px; color: {{ brand.secondary_color }}; padding: 0 24px; }
+        table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+        td { padding: 14px 0; border-bottom: 1px dotted #d4d4d4; font-size: 14px; }
+        td:first-child { color: #999; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
+        td:last-child { font-weight: 600; color: #1a1a1a; text-align: right; font-family: 'Liberation Serif', 'Georgia', serif; }
+        .codes-section { display: flex; justify-content: space-around; align-items: center; padding: 24px; background: #fafaf7; margin-top: 32px; border: 1px dashed {{ brand.secondary_color }}; }
+        .code-item { text-align: center; }
+        .code-item img { max-width: 140px; height: auto; }
+        .code-label { font-size: 10px; color: #999; margin-top: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .footer { padding: 24px 40px; background: #1a1a1a; color: #d4d4d4; font-size: 11px; line-height: 1.7; }
+        .footer-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+        .footer-col strong { color: {{ brand.secondary_color }}; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="header">
+            <div class="brand-block">
+                {% if brand.logo_base64 %}
+                    <img src="{{ brand.logo_base64 }}" alt="Logo" class="brand-logo">
+                {% else %}
+                    <div class="brand-name">{{ brand.company_name }}</div>
+                {% endif %}
+            </div>
+            <div class="doc-info">
+                <div class="doc-label">Boarding Pass</div>
+                <div class="doc-pnr">{{ ticket.booking_reference }}</div>
+            </div>
+        </div>
+        <div class="luxury-divider"></div>
+
+        <div class="content">
+            <div class="passenger-section">
+                <div class="passenger-label">Passenger</div>
+                <div class="passenger-name">{{ ticket.passenger_name }}</div>
+            </div>
+
+            <div class="flight-info">
+                <div class="flight-detail">
+                    <div class="city">{{ ticket.origin }}</div>
+                    <div class="time">{{ ticket.departure_time }}</div>
+                </div>
+                <div class="flight-arrow">—✈—</div>
+                <div class="flight-detail">
+                    <div class="city">{{ ticket.destination }}</div>
+                    <div class="time">{{ ticket.arrival_time }}</div>
+                </div>
+            </div>
+
+            <table>
+                <tr><td>Flight</td><td>{{ ticket.flight_number }} · {{ ticket.airline }}</td></tr>
+                <tr><td>Ticket Number</td><td>{{ ticket.ticket_number }}</td></tr>
+                <tr><td>Class of Service</td><td>{{ ticket.class_type }}</td></tr>
+                <tr><td>Baggage Allowance</td><td>{{ ticket.baggage }}</td></tr>
+            </table>
+
+            <div class="codes-section">
+                <div class="code-item">
+                    <img src="{{ qr_url }}" alt="QR Code">
+                    <div class="code-label">Check-in</div>
+                </div>
+                <div class="code-item">
+                    <img src="{{ barcode_url }}" alt="Barcode">
+                    <div class="code-label">Ticket Barcode</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <strong>{{ brand.company_name }}</strong><br>
+                    {% if brand.address %}{{ brand.address }}<br>{% endif %}
+                    {% if brand.contact_email %}{{ brand.contact_email }}{% endif %}{% if brand.contact_phone %} · {{ brand.contact_phone }}{% endif %}{% if brand.website %}<br>{{ brand.website }}{% endif %}
+                </div>
+                <div class="footer-col" style="text-align: right;">
+                    {% if brand.gst_number %}<strong>GST</strong> {{ brand.gst_number }}<br>{% endif %}
+                    Present with valid photo ID at the airport.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

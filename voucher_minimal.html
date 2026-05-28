@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Voucher</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; background: white; padding: 0; color: #1a1a1a; }
+        .container { background: white; padding: 48px; max-width: 700px; margin: 40px auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 24px; border-bottom: 3px solid {{ brand.primary_color }}; margin-bottom: 32px; }
+        .brand-block { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { max-height: 48px; max-width: 140px; }
+        .brand-name { font-size: 20px; font-weight: 700; color: {{ brand.primary_color }}; }
+        .doc-info { text-align: right; }
+        .doc-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+        .doc-conf { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+        .section { margin-bottom: 24px; }
+        .section-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+        .section-value { font-size: 18px; color: #1a1a1a; font-weight: 500; }
+        .hotel { padding: 20px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; margin: 24px 0; }
+        .hotel-name { font-size: 24px; font-weight: 600; color: {{ brand.primary_color }}; margin-bottom: 4px; }
+        .hotel-address { font-size: 13px; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        td { padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+        td:first-child { color: #888; }
+        td:last-child { color: #1a1a1a; font-weight: 600; text-align: right; }
+        .codes-section { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; margin-top: 32px; border-top: 1px solid #eee; }
+        .code-item { text-align: center; }
+        .code-item img { max-width: 110px; height: auto; }
+        .code-label { font-size: 10px; color: #888; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee; font-size: 10px; color: #888; line-height: 1.6; }
+        .footer-row { display: flex; justify-content: space-between; gap: 24px; }
+        .footer-col strong { color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand-block">
+                {% if brand.logo_base64 %}
+                    <img src="{{ brand.logo_base64 }}" alt="Logo" class="brand-logo">
+                {% else %}
+                    <div class="brand-name">{{ brand.company_name }}</div>
+                {% endif %}
+            </div>
+            <div class="doc-info">
+                <div class="doc-label">Hotel Voucher</div>
+                <div class="doc-conf">{{ voucher.confirmation_number }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-label">Guest</div>
+            <div class="section-value">{{ voucher.guest_name }}</div>
+        </div>
+
+        <div class="hotel">
+            <div class="hotel-name">{{ voucher.hotel_name }}</div>
+            <div class="hotel-address">{{ voucher.hotel_address }}</div>
+        </div>
+
+        <table>
+            <tr><td>Check-in</td><td>{{ voucher.checkin_date }}</td></tr>
+            <tr><td>Check-out</td><td>{{ voucher.checkout_date }}</td></tr>
+            <tr><td>Room</td><td>{{ voucher.room_category }}</td></tr>
+            <tr><td>Meal Plan</td><td>{{ voucher.meal_plan }}</td></tr>
+            <tr><td>Guests</td><td>{{ voucher.num_guests }}</td></tr>
+        </table>
+
+        <div class="codes-section">
+            <div class="code-item">
+                <img src="{{ qr_url }}" alt="QR Code">
+                <div class="code-label">Scan for Check-in</div>
+            </div>
+            <div class="code-item">
+                <img src="{{ barcode_url }}" alt="Barcode">
+                <div class="code-label">Voucher Code</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <strong>{{ brand.company_name }}</strong><br>
+                    {% if brand.address %}{{ brand.address }}<br>{% endif %}
+                    {% if brand.contact_email %}{{ brand.contact_email }}{% endif %}{% if brand.contact_phone %} · {{ brand.contact_phone }}{% endif %}
+                </div>
+                <div class="footer-col" style="text-align: right;">
+                    {% if brand.gst_number %}GST: {{ brand.gst_number }}<br>{% endif %}
+                    {% if brand.website %}{{ brand.website }}{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Voucher</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8fafc;
+            padding: 40px;
+        }
+        .voucher-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            background: linear-gradient(135deg, {{ brand.secondary_color }} 0%, {{ brand.secondary_color }}dd 100%);
+            color: #0f172a;
+            padding: 28px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .brand-logo {
+            max-height: 56px;
+            max-width: 140px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+        .brand-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+        .header-right { text-align: right; }
+        .header-right .doc-type {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+        .header-right .conf {
+            font-size: 20px;
+            font-weight: bold;
+            background: {{ brand.primary_color }};
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .content { padding: 32px; }
+        .section { margin-bottom: 24px; }
+        .section-title {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .section-value {
+            font-size: 18px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .hotel-info {
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin: 16px 0;
+            border-left: 4px solid {{ brand.secondary_color }};
+        }
+        .hotel-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: {{ brand.primary_color }};
+            margin-bottom: 8px;
+        }
+        .hotel-address {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+        }
+        .codes-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 24px;
+            background: #fefce8;
+            border-radius: 12px;
+            margin-top: 24px;
+            border: 1px dashed {{ brand.secondary_color }};
+        }
+        .code-item { text-align: center; }
+        .code-item img { max-width: 140px; height: auto; }
+        .code-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .footer {
+            padding: 20px 32px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.6;
+            border-top: 2px solid {{ brand.secondary_color }};
+        }
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+        .footer-col strong { color: #0f172a; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        td {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td:first-child {
+            color: #64748b;
+            font-size: 13px;
+        }
+        td:last-child {
+            font-weight: 600;
+            color: #0f172a;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="voucher-container">
+        <div class="header">
+            <div class="header-left">
+                {% if brand.logo_base64 %}
+                <img src="{{ brand.logo_base64 }}" alt="Logo" class="brand-logo">
+                {% else %}
+                <div class="brand-name">{{ brand.company_name }}</div>
+                {% endif %}
+            </div>
+            <div class="header-right">
+                <div class="doc-type">Hotel Voucher</div>
+                <div class="conf">{{ voucher.confirmation_number }}</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-title">Guest Name</div>
+                <div class="section-value">{{ voucher.guest_name }}</div>
+            </div>
+
+            <div class="hotel-info">
+                <div class="hotel-name">{{ voucher.hotel_name }}</div>
+                <div class="hotel-address">{{ voucher.hotel_address }}</div>
+            </div>
+
+            <table>
+                <tr>
+                    <td>Check-in Date</td>
+                    <td>{{ voucher.checkin_date }}</td>
+                </tr>
+                <tr>
+                    <td>Check-out Date</td>
+                    <td>{{ voucher.checkout_date }}</td>
+                </tr>
+                <tr>
+                    <td>Room Category</td>
+                    <td>{{ voucher.room_category }}</td>
+                </tr>
+                <tr>
+                    <td>Meal Plan</td>
+                    <td>{{ voucher.meal_plan }}</td>
+                </tr>
+                <tr>
+                    <td>Number of Guests</td>
+                    <td>{{ voucher.num_guests }}</td>
+                </tr>
+            </table>
+
+            <div class="codes-section">
+                <div class="code-item">
+                    <img src="{{ qr_url }}" alt="QR Code">
+                    <div class="code-label">Scan for Check-in</div>
+                </div>
+                <div class="code-item">
+                    <img src="{{ barcode_url }}" alt="Barcode">
+                    <div class="code-label">Voucher Code</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <strong>{{ brand.company_name }}</strong><br>
+                    {% if brand.address %}{{ brand.address }}<br>{% endif %}
+                    {% if brand.contact_email %}{{ brand.contact_email }}{% endif %}
+                    {% if brand.contact_phone %} · {{ brand.contact_phone }}{% endif %}
+                    {% if brand.website %}<br>{{ brand.website }}{% endif %}
+                </div>
+                <div class="footer-col" style="text-align: right;">
+                    {% if brand.gst_number %}<strong>GST:</strong> {{ brand.gst_number }}<br>{% endif %}
+                    Present this voucher with a valid photo ID at hotel check-in.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>E-Ticket</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8fafc;
+            padding: 40px;
+        }
+        .ticket-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            background: linear-gradient(135deg, {{ brand.primary_color }} 0%, {{ brand.primary_color }}cc 100%);
+            color: white;
+            padding: 28px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .brand-logo {
+            max-height: 56px;
+            max-width: 140px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+        .brand-name {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+        .header-right { text-align: right; }
+        .header-right .doc-type {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+        .header-right .pnr {
+            font-size: 20px;
+            font-weight: bold;
+            background: {{ brand.secondary_color }};
+            color: #0f172a;
+            padding: 4px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .content {
+            padding: 32px;
+        }
+        .section {
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .section-value {
+            font-size: 18px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .flight-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin: 16px 0;
+            border-left: 4px solid {{ brand.primary_color }};
+        }
+        .flight-detail {
+            text-align: center;
+            flex: 1;
+        }
+        .flight-detail .city {
+            font-size: 32px;
+            font-weight: bold;
+            color: {{ brand.primary_color }};
+            line-height: 1.1;
+        }
+        .flight-detail .time {
+            font-size: 14px;
+            color: #475569;
+            margin-top: 6px;
+        }
+        .flight-arrow {
+            color: {{ brand.secondary_color }};
+            font-size: 28px;
+            padding: 0 16px;
+        }
+        .codes-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 24px;
+            background: #fefce8;
+            border-radius: 12px;
+            margin-top: 24px;
+            border: 1px dashed {{ brand.secondary_color }};
+        }
+        .code-item {
+            text-align: center;
+        }
+        .code-item img {
+            max-width: 140px;
+            height: auto;
+        }
+        .code-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .footer {
+            padding: 20px 32px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.6;
+            border-top: 2px solid {{ brand.secondary_color }};
+        }
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+        .footer-col strong { color: #0f172a; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        td {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td:first-child {
+            color: #64748b;
+            font-size: 13px;
+        }
+        td:last-child {
+            font-weight: 600;
+            color: #0f172a;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="header">
+            <div class="header-left">
+                {% if brand.logo_base64 %}
+                <img src="{{ brand.logo_base64 }}" alt="Logo" class="brand-logo">
+                {% else %}
+                <div class="brand-name">{{ brand.company_name }}</div>
+                {% endif %}
+            </div>
+            <div class="header-right">
+                <div class="doc-type">E-Ticket</div>
+                <div class="pnr">{{ ticket.booking_reference }}</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-title">Passenger Name</div>
+                <div class="section-value">{{ ticket.passenger_name }}</div>
+            </div>
+
+            <div class="flight-info">
+                <div class="flight-detail">
+                    <div class="city">{{ ticket.origin }}</div>
+                    <div class="time">{{ ticket.departure_time }}</div>
+                </div>
+                <div class="flight-arrow">✈</div>
+                <div class="flight-detail">
+                    <div class="city">{{ ticket.destination }}</div>
+                    <div class="time">{{ ticket.arrival_time }}</div>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+                    <td>Flight Number</td>
+                    <td>{{ ticket.flight_number }}</td>
+                </tr>
+                <tr>
+                    <td>Airline</td>
+                    <td>{{ ticket.airline }}</td>
+                </tr>
+                <tr>
+                    <td>Ticket Number</td>
+                    <td>{{ ticket.ticket_number }}</td>
+                </tr>
+                <tr>
+                    <td>Class</td>
+                    <td>{{ ticket.class_type }}</td>
+                </tr>
+                <tr>
+                    <td>Baggage</td>
+                    <td>{{ ticket.baggage }}</td>
+                </tr>
+            </table>
+
+            <div class="codes-section">
+                <div class="code-item">
+                    <img src="{{ qr_url }}" alt="QR Code">
+                    <div class="code-label">Scan for Check-in</div>
+                </div>
+                <div class="code-item">
+                    <img src="{{ barcode_url }}" alt="Barcode">
+                    <div class="code-label">Ticket Barcode</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <strong>{{ brand.company_name }}</strong><br>
+                    {% if brand.address %}{{ brand.address }}<br>{% endif %}
+                    {% if brand.contact_email %}{{ brand.contact_email }}{% endif %}
+                    {% if brand.contact_phone %} · {{ brand.contact_phone }}{% endif %}
+                    {% if brand.website %}<br>{{ brand.website }}{% endif %}
+                </div>
+                <div class="footer-col" style="text-align: right;">
+                    {% if brand.gst_number %}<strong>GST:</strong> {{ brand.gst_number }}<br>{% endif %}
+                    Present this document with a valid photo ID at the airport.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
