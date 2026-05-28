@@ -22,7 +22,7 @@ from pdf_service import render_ticket_pdf, render_voucher_pdf
 from template_registry import list_templates
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
