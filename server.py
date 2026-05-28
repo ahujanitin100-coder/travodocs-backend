@@ -147,7 +147,7 @@ async def seed_admin():
 - POST /api/auth/logout
 - POST /api/auth/refresh
 """
-    with open("/app/memory/test_credentials.md", "w") as f:
+    with open("test_credentials.md", "w") as f:
         f.write(creds_content)
 
 # Auth Routes
