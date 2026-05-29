@@ -228,12 +228,13 @@ async def login(request: LoginRequest, response: Response):
         path="/"
     )
     
-    return UserResponse(
-        id=user_id,
-        email=email_lower,
-        name=user["name"],
-        role=user["role"]
-    )
+    return {
+    "id": user_id,
+    "email": email_lower,
+    "name": user["name"],
+    "role": user["role"],
+    "access_token": access_token
+}
 
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_me(user: dict = Depends(get_auth_user)):
