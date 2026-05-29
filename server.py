@@ -494,17 +494,17 @@ async def get_brand_kit(user: dict = Depends(get_auth_user)):
     return brand
 
 @api_router.put("/brand-kit")
-async def update_brand_kit(brand_data: BrandKitData, user: dict = Depends(get_auth_user)):
+async def update_brand_kit(brand_data: BrandKitData):
     # Validate logo size if present (limit ~1MB base64 = ~750KB binary)
     if brand_data.logo_base64 and len(brand_data.logo_base64) > 1_400_000:
         raise HTTPException(status_code=400, detail="Logo file too large. Maximum size is 1MB.")
     
     update_doc = brand_data.model_dump()
-    update_doc["user_id"] = user["_id"]
+    update_doc["user_id"] = "default_user"
     update_doc["updated_at"] = datetime.now(timezone.utc)
     
     await db.brand_kits.update_one(
-        {"user_id": user["_id"]},
+        {"user_id": "default_user"},
         {"$set": update_doc},
         upsert=True
     )
